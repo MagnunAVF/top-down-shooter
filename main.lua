@@ -114,10 +114,30 @@ end
 
 function spawnZombie()
     local zombie = {}
-    zombie.x = math.random(0, love.graphics.getWidth())
-    zombie.y = math.random(0, love.graphics.getHeight())
+    zombie.x = 0
+    zombie.y = 0
     zombie.speed = 140
     zombie.dead = false
+
+    local side = math.random(1, 4)
+    if side == 1 then
+        -- spawn in left
+        zombie.x = -30
+        zombie.y = math.random(0, love.graphics.getHeight())
+    elseif side == 2 then
+        -- spawn in right
+        zombie.x = love.graphics.getWidth() + 30
+        zombie.y = math.random(0, love.graphics.getHeight())
+    elseif side == 3 then
+        -- spawn in top
+        zombie.x = math.random(0, love.graphics.getWidth())
+        zombie.y = -30
+    elseif side == 4 then
+        -- spawn in bottom
+        zombie.x = math.random(0, love.graphics.getWidth())
+        zombie.y = love.graphics.getHeight() + 30
+    end
+
     table.insert(zombies, zombie)
 end
 
