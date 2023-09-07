@@ -1,4 +1,6 @@
 function love.load()
+    math.randomseed(os.time())
+
     sprites = {}
     sprites.background = love.graphics.newImage("sprites/background.png")
     sprites.bullet = love.graphics.newImage("sprites/bullet.png")
@@ -10,26 +12,30 @@ function love.load()
     player.y = love.graphics.getHeight() / 2
     player.speed = 180
 
+    gameFont = love.graphics.newFont(30)
+
     zombies = {}
     bullets = {}
 
-    gameState = 2
+    gameState = 1
     maxTime = 2
     timer = maxTime
 end
 
 function love.update(dt)
-    if love.keyboard.isDown("d") then
-        player.x = player.x + player.speed * dt
-    end
-    if love.keyboard.isDown("a") then
-        player.x = player.x - player.speed * dt
-    end
-    if love.keyboard.isDown("w") then
-        player.y = player.y - player.speed * dt
-    end
-    if love.keyboard.isDown("s") then
-        player.y = player.y + player.speed * dt
+    if gameState == 2 then
+        if love.keyboard.isDown("d") then
+            player.x = player.x + player.speed * dt
+        end
+        if love.keyboard.isDown("a") then
+            player.x = player.x - player.speed * dt
+        end
+        if love.keyboard.isDown("w") then
+            player.y = player.y - player.speed * dt
+        end
+        if love.keyboard.isDown("s") then
+            player.y = player.y + player.speed * dt
+        end
     end
 
     for _, z in ipairs(zombies) do
@@ -40,6 +46,8 @@ function love.update(dt)
             for i, _ in ipairs(zombies) do
                 zombies[i] = nil
                 gameState = 1
+                player.x = love.graphics.getWidth()/2
+                player.y = love.graphics.getHeight()/2
             end
         end
     end
@@ -92,8 +100,10 @@ end
 function love.draw()
     love.graphics.draw(sprites.background, 0, 0)
 
-    love.graphics.printf("Bullets = " .. #bullets, 5, 5, love.graphics.getWidth(), "left")
-    love.graphics.printf("Zombies = " .. #zombies, 300, 5, love.graphics.getWidth(), "left")
+    if gameState == 1 then
+        love.graphics.setFont(gameFont)
+        love.graphics.printf("Click anywhere to begin!", 0, 50, love.graphics.getWidth(), "center")
+    end
 
     love.graphics.draw(sprites.player, player.x, player.y, playerMouseAngle(), nil, nil, sprites.player:getWidth() / 2, sprites.player:getHeight() / 2)
 
@@ -113,8 +123,12 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
-    if button == 1 then
+    if button == 1 and gameState == 2 then
         spawnBullet()
+    elseif button == 1 and gameState == 1 then
+        gameState = 2
+        maxTime = 2
+        timer = maxTime
     end
 end
 
