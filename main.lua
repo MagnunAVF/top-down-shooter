@@ -18,6 +18,7 @@ function love.load()
     bullets = {}
 
     gameState = 1
+    score = 0
     maxTime = 2
     timer = maxTime
 end
@@ -69,6 +70,7 @@ function love.update(dt)
             if distanceBetween(z.x, z.y, b.x, b.y) < 20 then
                 z.dead = true
                 b.dead = true
+                score = score + 1
             end
         end
     end
@@ -105,6 +107,8 @@ function love.draw()
         love.graphics.printf("Click anywhere to begin!", 0, 50, love.graphics.getWidth(), "center")
     end
 
+    love.graphics.printf("Score: " .. score, 0, love.graphics.getHeight() - 100, love.graphics.getWidth(), "center")
+
     love.graphics.draw(sprites.player, player.x, player.y, playerMouseAngle(), nil, nil, sprites.player:getWidth() / 2, sprites.player:getHeight() / 2)
 
     for _, z in ipairs(zombies) do
@@ -129,6 +133,7 @@ function love.mousepressed(x, y, button)
         gameState = 2
         maxTime = 2
         timer = maxTime
+        score = 0
     end
 end
 
