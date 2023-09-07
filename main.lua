@@ -12,6 +12,10 @@ function love.load()
 
     zombies = {}
     bullets = {}
+
+    gameState = 2
+    maxTime = 2
+    timer = maxTime
 end
 
 function love.update(dt)
@@ -35,6 +39,7 @@ function love.update(dt)
         if distanceBetween(z.x, z.y, player.x, player.y) <  30 then
             for i, _ in ipairs(zombies) do
                 zombies[i] = nil
+                gameState = 1
             end
         end
     end
@@ -73,12 +78,22 @@ function love.update(dt)
             table.remove(bullets, i)
         end
     end
+
+    if gameState == 2 then
+        timer = timer - dt
+        if timer <= 0 then
+            spawnZombie()
+            maxTime = 0.95 * maxTime
+            timer = maxTime
+        end
+    end
 end
 
 function love.draw()
     love.graphics.draw(sprites.background, 0, 0)
 
     love.graphics.printf("Bullets = " .. #bullets, 5, 5, love.graphics.getWidth(), "left")
+    love.graphics.printf("Zombies = " .. #zombies, 300, 5, love.graphics.getWidth(), "left")
 
     love.graphics.draw(sprites.player, player.x, player.y, playerMouseAngle(), nil, nil, sprites.player:getWidth() / 2, sprites.player:getHeight() / 2)
 
